@@ -23,7 +23,18 @@
             <city>Beijing</city>
             <country>China</country>
           </postal>
-          <email>zhangj@zgclab.edu.cn</email>
+          <email>zhangj@mail.zgclab.edu.cn</email>
+        </address>
+      </author>
+
+    <author initials="Y." surname="Wang" fullname="Yangyang Wang">
+        <organization>Tsinghua University</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>wangyy@cernet.edu.cn</email>
         </address>
       </author>
     
@@ -31,14 +42,22 @@
         <organization>CZ.NIC</organization>
         <address>
           <postal>
-            <city>13000 Praha</city>
             <country>Czechia</country>
           </postal>
-          <email>maria.matejka@nic.cz, mq@jmq.cz</email>
+          <email>maria.matejka@nic.cz</email>
         </address>
       </author>
-   
-   
+    
+    <author initials="M." surname="Xu" fullname="Mingwei Xu">
+        <organization>Tsinghua University</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>xmw@cernet.edu.cn</email>
+        </address>
+      </author>
 
 
     <date year="2025"/>
@@ -159,8 +178,17 @@
     
   <section>
     <name>Necessity and Benificial Cases</name>
-    <t>By performing AS_PATH verification before sending routes to BGP neighbors at the eBGP egress, a BGP speaker can prevent local route leaks, 
-      avoid local misconfigurations, and detect ASPA registration errors.</t>
+    <t>By performing AS_PATH verification before sending routes to BGP neighbors at the eBGP egress, a BGP speaker can avoid local misconfigurations, prevent local route leaks, 
+      and detect ASPA registration errors.</t>
+
+    <section>
+    <name>Prevent Local Misconfigurations</name>
+    <t>Egress AS_PATH verification will prevent misconfigurations of the egress router. If the local AS has multiple AS numbers, it is necessary to ensure 
+    that the AS number added to the AS_PATH at the egress is correct and whether it could lead to neighbors validating it as invalid. Additionally, the 
+    local AS needs to check if any modifications to the AS_PATH in export policy are legitimate. Verification at the egress will prevent the local AS from 
+    advertising routes with invalid AS_PATHs, allowing for quick detection of issues and correction of local configuration errors.</t>
+
+    </section>
 
     <section>
     <name>Complete ASPA-based Verification Method</name>
@@ -177,15 +205,6 @@
     In terms of operational complexity, OTC requires BGP role configuration per router per session, increasing configuration complexity. Furthermore, to 
     implement OTC as specified in <xref target="RFC9234"/>, both the local AS and remote peers need router updates, while ASPA only requires that neighbors 
     have records in ASPA for local verification.</t>
-    </section>
-
-    <section>
-    <name>Prevent Local Misconfigurations</name>
-    <t>Egress AS_PATH verification will prevent misconfigurations of the egress router. If the local AS has multiple AS numbers, it is necessary to ensure 
-    that the AS number added to the AS_PATH at the egress is correct and whether it could lead to neighbors validating it as invalid. Additionally, the 
-    local AS needs to check if any modifications to the AS_PATH in export policy are legitimate. Verification at the egress will prevent the local AS from 
-    advertising routes with invalid AS_PATHs, allowing for quick detection of issues and correction of local configuration errors.</t>
-
     </section>
 
     <section>
@@ -328,7 +347,7 @@
     <section anchor="Acknowledgements" numbered="false"> 
       <!-- [REPLACE/DELETE] an Acknowledgements section is optional -->
       <name>Acknowledgements</name>
-      <t>The authors thank Maria Matejka for providing cases that can benefits from performing AS_PATH verification at eBGP egress.</t>
+      <t>The authors thank Nan Geng, Sriram Kotikalapudi and Randy Bush for their valuable suggestions and comments.</t>
     </section>
 
  <!--     <section anchor="Contributors" numbered="false">-->
