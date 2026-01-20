@@ -101,7 +101,7 @@
             and certain prefix hijacks involving forged origins or forged path-segments <xref target="I-D.ietf-sidrops-aspa-verification"/>. The ASPA object profile is defined in <xref target="I-D.ietf-sidrops-aspa-profile"/>. </t>
 
         <t> The procedures described in Section 5 of <xref target="I-D.ietf-sidrops-aspa-verification"/> perform ASPA-based BGP AS_PATH verification at eBGP ingress.
-        Performing BGP AS_PATH verification at eBGP engress (this document) can be beneficial as follows: (1) Ensure coverage should ASPA deployment be absent at the ingress eBGP router of the AS, and 
+        Performing BGP AS_PATH verification at eBGP ingress (this document) can be beneficial as follows: (1) Ensure coverage should ASPA deployment be absent at the ingress eBGP router of the AS, and 
         (2) Check whether the AS_PATH (with the local AS added) as received by the eBGP neighbor at egress router would be Invalid and, if so, avoid sending the BGP Update.
         The egress AS_PATH verification inherently detects and alerts the local AS operator if there were any eBGP peering misconfiguration or error in the ASPA registration of the eBGP neighbor on the ingress side.
         </t>
@@ -132,7 +132,7 @@
     </t>
   </section>
 
-    <section>
+    <section anchor="method">
       <name>Procedure of ASPA-based AS_PATH Verification at eBGP Egress</name>
 
       <t>When a BGP speaker advertises a route to an external peer through eBGP egress, the BGP speaker prepends its own AS number to the AS_PATH of 
@@ -176,9 +176,9 @@
             (Sec. 5.5 of <xref target="I-D.ietf-sidrops-aspa-verification"/>) to verify the AS_PATH P.</li>
         </ol>
 
-      <section> <name>Utility of Only to Customer (OTC) Attribute</name>
+      <section anchor = "otc"> <name>Utility of Only to Customer (OTC) Attribute</name>
        <t>
-         The egress verification procedure described above can produce incorrect results at R2 in some cases (see <xref target="fig1"/>). This is because at R1 there is direct knowledge (based on local configuration) of AS X's peering relation with the neighbor AS(N) while at R2 the procedure must rely on the ASPA data. But the ASPA data may be absent or insufficient. For example, let the  AS(N) to AS X relationship be complex consisting of a C2P session and a p2p session. AS(N) has an ASPA that attests that AS X is a provider (per ASPA specification). Let the AS X to AS Y relationship be C2P or p2p. Then for a route originated by AS(N) and sent to AS X on the p2p session, the egress verification at R2 produces a Valid outcome. Only R1 knows that the route ingressed on a p2p session; R2 does not. In order that R2 does not forward the route to AS Y, it cannot rely on the outcome of the egress verification in this example. It is imperative that R1 attaches the Only to Customer (OTC) Attribute <xref target="RFC9234"/> to the route on ingress. If the ingress router R1 is not upgraded to perfrom ASPA verification (partial deployment of ASPA within an AS), it must be upgraded to do OTC (or minimally an intra-AS BGP Community that emulates the OTC Attribute for route leak prevention).
+         The egress verification procedure described above can produce incorrect results at R2 in some cases (see <xref target="fig1"/>). This is because at R1 there is direct knowledge (based on local configuration) of AS X's peering relation with the neighbor AS(N) while at R2 the procedure must rely on the ASPA data. But the ASPA data may be absent or insufficient. For example, let the  AS(N) to AS X relationship be complex consisting of a C2P session and a p2p session. AS(N) has an ASPA that attests that AS X is a provider (per ASPA specification). Let the AS X to AS Y relationship be C2P or p2p. Then for a route originated by AS(N) and sent to AS X on the p2p session, the egress verification at R2 produces a Valid outcome. Only R1 knows that the route made ingress on a p2p session; R2 does not. In order that R2 does not forward the route to AS Y, it cannot rely on the outcome of the egress verification in this example. It is imperative that R1 attaches the Only to Customer (OTC) Attribute <xref target="RFC9234"/> to the route on ingress. Even if the ingress router R1 is not upgraded to perform ASPA verification (partial deployment of ASPA within an AS), it must be upgraded to do OTC (or minimally an intra-AS BGP Community that emulates the OTC Attribute for route leak prevention).
        </t>
       </section>
       <section>
@@ -215,28 +215,30 @@
        </ol>
       </section>
 
-  <section>
-    <name>Necessity and Benificial Cases</name>
-    <t>By performing AS_PATH verification before sending routes to BGP neighbors at the eBGP egress, a BGP speaker can avoid local misconfigurations, prevent local route leaks, 
-      and detect ASPA registration errors.</t>
-
+    <section>
+    <name>Necessity and Beneficial Cases</name>
+    <t>Performing ASPA-based egress AS_PATH verification allows an eBGP router, in some cases, to prevent local route leaks and to help diagnose local peering misconfigurations and ASPA registration errors.
+    The cases where these benefits may not materialize are: (1) eBGP peering relations are complex, or (2) the eBGP neighbor on the ingress side has no ASPA registration, 
+    or (3) the local AS is in an AS migration state.
+    In the first and second cases, the egress ASPA algorithm (<xref target="method"/>) could produce a false negative result but never a false positive 
+    and hence the behavior would be conservative (i.e., a valid route is not dropped). 
+    When there is AS migration, it is necessary that the local AS has conveyed to its customer ASes all the relevant AS numbers (temporary as well as the global AS ID) for correct ASPA registrations.</t>
     <section>
     <name>Prevent Local Misconfigurations</name>
     <t>Egress AS_PATH verification will prevent misconfigurations of the egress router. If the local AS has multiple AS numbers, it is necessary to ensure 
-    that the AS number added to the AS_PATH at the egress is correct and whether it could lead to neighbors validating it as invalid. Additionally, the 
+    that the AS number added to the AS_PATH at the egress is correct and whether it could lead to neighbors validating it as Invalid. Additionally, the 
     local AS needs to check if any modifications to the AS_PATH in export policy are legitimate. Verification at the egress will prevent the local AS from 
     advertising routes with invalid AS_PATHs, allowing for quick detection of issues and correction of local configuration errors.</t>
-
     </section>
-
     <section>
-    <name>Complete ASPA-based Verification Method</name>
-
-    <t>The current ASPA-based AS_PATH verification is not a complete solution. Performing AS_PATH verification at the ingress can detect route leaks 
-    in the routes received from BGP neighbors, but it cannot prevent local route leaks. Egress AS_PATH verification can detect local route leaks, 
-    further completing the overall ASPA-based AS_PATH verification solution.</t>
-    
-    <t>Even though OTC, defined in <xref target="RFC9234"/>, can address local route leaks when used properly, it is tightly coupled with BGP, which increases 
+    <name>Complementing the ASPA-based Ingress Verification Method</name>
+    <t>Performing AS_PATH verification at the ingress can detect route leaks 
+    in the routes received from eBGP neighbors, but additional measures are needed to prevent local route leaks.
+    As discussed in <xref target="otc"/>), the OTC Attribute helps prevent local routes leaks .
+    Egress ASPA verification can also detect some (but not all) local route leaks.</t>
+    <!-- I am uncomfortable beating up on OTC here unnecessarily. This material below seems to do that and also has technical errors in the stements made. IMO, better to not include it. -->
+    <!--
+    <t>Even though OTC, defined in <xref target="RFC9234"/>, can address local route leaks, it is tightly coupled with BGP, which increases 
     the likelihood of configuration errors. In contrast, ASPA provides an out-of-band verification solution that decouples from BGP protocol configuration, 
     making the chances of simultaneous configuration errors much lower. 
     Additionally, ASPA has advantages in both security and operability. OTC lacks built-in tamper-proof mechanisms and integrity verification, leaving it 
@@ -244,6 +246,7 @@
     In terms of operational complexity, OTC requires BGP role configuration per router per session, increasing configuration complexity. Furthermore, to 
     implement OTC as specified in <xref target="RFC9234"/>, both the local AS and remote peers need router updates, while ASPA only requires that neighbors 
     have records in ASPA for local verification.</t>
+    -->
     </section>
 
     <section>
@@ -251,16 +254,16 @@
     <t>If the local AS or customers have registration errors or omissions, they can be detected at the egress, allowing for 
     quick identification of the issue. This mainly includes the following two scenarios:</t>
 
-      <t>(1) Case of local AS: if the local AS has omitted one or more providers in ASPA provider list, the local AS may end up advertising routes with 
+      <t>(1) Case of local AS: If the local AS has omitted one or more providers in the Set of Provider ASes (SPAS) in its ASPA, the local AS may end up advertising routes with 
       ASPA-invalid AS_PATH to its customers.</t>
 
-      <t>(2) Case of Customer: if the Customer of local AS forgets to include the local AS in their ASPA provider list, the local AS may end up advertising 
+      <t>(2) Case of Customer AS: If a Customer of the local AS forgets to include the local AS in their SPAS, the local AS may end up advertising 
       their routes with ASPA-invalid AS_PATH to its neighbors.</t>
 
     <t>Performing AS_PATH verification at the egress could detect such registration errors immediately and point to its actual source clearly and noticeably; 
     otherwise, routes advertised by the local AS may be filtered by other ASes, leaving the local AS unaware of the issue.</t>
     </section>
-  </section>
+    </section>
 
     <section anchor="operation">
       <!-- All drafts are required to have a security considerations section. See RFC 3552 for a guide. -->
@@ -269,11 +272,15 @@
          The peering relationships between the local AS and its external neighbor ASes, including Customer-Provider/Provider-Customer, Peer-Peer, 
          Route Server (RS) and RS-client, mutual-transit, are used in path verification procedures to determine whether upstream or downstream procedures 
          should be applied. There are the following possible ways to know the relations between the local AS and its external neighbor AS: (1) The first way 
-         is to use the BGP Role Capabilities exchanged in the BGP OPEN message as specified in <xref target="RFC9234"/>. (2) The second way is to use ASPA objects 
-         registered by the local AS and its external neighbor AS. (3) Another possible way is to use local configuration. When the relation of two neighboring 
+         is to use the BGP Role Capabilities exchanged in the BGP OPEN message as specified in <xref target="RFC9234"/>; (2) The second way is to use ASPA objects 
+         registered by the local AS and its external neighbor AS; (3) Another way is to use the local BGP peering configuration. 
+<!-- IMO, the following is confusing. Let us delete it for now. I think RFC 9234 has talked about it. No neeed to rephrase. -->
+<!--         
+         When the relation of two neighboring 
          ASes is mutual-transit, they are Customers of each other in BGP roles. It can be confirmed by BGP roles advertised in the BGP OPEN message, or 
          configuration in local file. If a mutual-transit relation is identified as Cutomer-Provider, a false positive of route leak may be generated in path 
          verification.
+-->
       </t>
     </section>
 
@@ -320,62 +327,7 @@
         <!-- The recommended and simplest way to include a well known reference -->
 
       </references>
-<!-- 
-      <references>
-        <name>Informative References</name>
-        <reference anchor="I-D.ietf-sidrops-aspa-profile" target="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-profile-19">
-        <front>
-        <title>A Profile for Autonomous System Provider Authorization</title>
-        <author initials="A." surname="Azimov" fullname="Alexander Azimov">
-        <organization>Yandex</organization>
-        </author>
-        <author initials="E." surname="Uskov" fullname="Eugene Uskov">
-        <organization>JetLend</organization>
-        </author>
-        <author initials="R." surname="Bush" fullname="Randy Bush">
-        <organization>Internet Initiative Japan</organization>
-        </author>
-        <author initials="J." surname="Snijders" fullname="Job Snijders">
-        <organization>Fastly</organization>
-        </author>
-        <author initials="R." surname="Housley" fullname="Russ Housley">
-        <organization>Vigil Security, LLC</organization>
-        </author>
-        <author initials="B." surname="Maddison" fullname="Ben Maddison">
-        <organization>Workonline</organization>
-        </author>
-        <date month="January" day="6" year="2025"/>
-        </front>
-        <seriesInfo name="Internet-Draft" value="draft-ietf-sidrops-aspa-profile-19"/>
-        </reference>
-
-        <reference anchor="I-D.ietf-sidrops-aspa-verification" target="https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-22">
-        <front>
-        <title>BGP AS_PATH Verification Based on Autonomous System Provider Authorization (ASPA) Objects</title>
-        <author initials="A." surname="Azimov" fullname="Alexander Azimov">
-        <organization>Yandex</organization>
-        </author>
-        <author initials="E." surname="Bogomazov" fullname="Eugene Bogomazov">
-        <organization>Qrator Labs</organization>
-        </author>
-        <author initials="R." surname="Bush" fullname="Randy Bush">
-        <organization>Internet Initiative Japan &amp; Arrcus, Inc.</organization>
-        </author>
-        <author initials="K." surname="Patel" fullname="Keyur Patel">
-        <organization>Arrcus</organization>
-        </author>
-        <author initials="J." surname="Snijders" fullname="Job Snijders">
-        <organization>Fastly</organization>
-        </author>
-        <author initials="K." surname="Sriram" fullname="Kotikalapudi Sriram">
-        <organization>USA National Institute of Standards and Technology</organization>
-        </author>
-        <date month="March" day="23" year="2025"/>
-        </front>
-        <seriesInfo name="Internet-Draft" value="draft-ietf-sidrops-aspa-verification-22"/>
-        </reference>
-      </references>
--->  
+ 
     </references>
     
     
