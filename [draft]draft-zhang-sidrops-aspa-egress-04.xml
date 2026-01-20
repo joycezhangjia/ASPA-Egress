@@ -101,7 +101,7 @@
             and certain prefix hijacks involving forged origins or forged path-segments <xref target="I-D.ietf-sidrops-aspa-verification"/>. The ASPA object profile is defined in <xref target="I-D.ietf-sidrops-aspa-profile"/>. </t>
 
         <t> The procedures described in Section 5 of <xref target="I-D.ietf-sidrops-aspa-verification"/> perform ASPA-based BGP AS_PATH verification at eBGP ingress.
-        Performing BGP AS_PATH verification at eBGP ingress (this document) can be beneficial as follows: (1) Ensure coverage should ASPA deployment be absent at the ingress eBGP router of the AS, and 
+        Performing BGP AS_PATH verification at eBGP egress (this document) can be beneficial as follows: (1) Ensure coverage should ASPA deployment be absent at the ingress eBGP router of the AS, and 
         (2) Check whether the AS_PATH (with the local AS added) as received by the eBGP neighbor at egress router would be Invalid and, if so, avoid sending the BGP Update.
         The egress AS_PATH verification inherently detects and alerts the local AS operator if there were any eBGP peering misconfiguration or error in the ASPA registration of the eBGP neighbor on the ingress side.
         </t>
