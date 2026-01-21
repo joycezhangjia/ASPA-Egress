@@ -61,9 +61,32 @@
           <email>xmw@cernet.edu.cn</email>
         </address>
       </author>
+    <author fullname="Kotikalapudi Sriram" initials="K." surname="Sriram">
+      <organization abbrev="USA NIST">USA National Institute of Standards and Technology</organization>
+      <address>
+        <postal>
+          <street>100 Bureau Drive</street>
+          <city>Gaithersburg</city>
+          <region>MD</region>
+          <code>20899</code>
+          <country>United States of America</country>
+        </postal>
+        <email>ksriram@nist.gov</email>
+      </address>
+    </author>
+     <author initials="N." surname="Geng" fullname="Nan Geng">
+        <organization>Huawei</organization>
+        <address>
+          <postal>
+            <city>Beijing</city>
+            <country>China</country>
+          </postal>
+          <email>gengnan@huawei.com</email>
+        </address>
+      </author>
+  
 
-
-    <date year="2025"/>
+    <date year="2026"/>
     <!-- On draft subbmission:
          * If only the current year is specified, the current day and month will be used.
          * If the month and year are both specified and are the current ones, the current day will
