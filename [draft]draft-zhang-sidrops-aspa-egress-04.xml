@@ -123,7 +123,7 @@
         <t>Autonomous System Provider Authorization (ASPA) objects in the Resource Public Key Infrastructure (RPKI) can be used to verify BGP AS_PATH for detection and mitigation of route leaks 
             and certain prefix hijacks involving forged origins or forged path-segments <xref target="I-D.ietf-sidrops-aspa-verification"/>. The ASPA object profile is defined in <xref target="I-D.ietf-sidrops-aspa-profile"/>. </t>
 
-	  <t>The procedures described in Section 5 of <xref target="I-D.ietf-sidrops-aspa-verification"/> perform ASPA-based BGP AS_PATH verification at eBGP ingress.
+	  <t>Section 5 of <xref target="I-D.ietf-sidrops-aspa-verification"/> describes the procedures to perform ASPA-based BGP AS_PATH verification at eBGP ingress.
 	    This document additionally explains the reasons, use cases, scenarios, variants and specifics
 	  of ASPA-based BGP AS_PATH verification at eBGP egress and in detached configurations,
 	    in a similar way as <xref target="RFC8893"/> did with RPKI route origin validation (RPKI-ROV) for BGP export.</t>
@@ -178,7 +178,7 @@
 	Then, all routes announced to AS P by AS N have AS_PATH which begins with AS N and possibly continues with other AS numbers.
 	  Such an AS_PATH is evaluated as ASPA Valid or Unknown by the Upstream algorithm as specified in <xref target="I-D.ietf-sidrops-aspa-verification"/>, section 5.4, based on the published customers' ASPA.</t>
 
-	<t>AS P then redistributes these routes to their providers (AS Y) and peers (AS Q).
+	<t>AS P then redistributes these routes to its providers (AS Y) and peers (AS Q).
 	On egress eBGP, AS P is prepended to AS_PATH as specified in <xref target="RFC4271"/>, section 5.1.2. In turn, this path
 	is evaluated at AS Y and AS Q by the Upstream algorithm again, but as P is NotProvider+ of N, all the routes
 	  suddenly appear ASPA Invalid.</t>
@@ -276,7 +276,7 @@
       relationship is not properly reflected in the published ASPA, the route
 	may fail AS_PATH Verification later, as described in <xref target="missing-provider"/></t>
 
-      <t>If the neighboring AS is a Provider or a Peer, the egress speaker runs
+      <t>If the neighboring AS is a Provider or a Peer, or a (transparent or non-transparent) Route Server (RS) while the egress speaker is an RS-client, the egress speaker runs
       the Upstream Verification Procedure, as specified in
       <xref target="I-D.ietf-sidrops-aspa-verification"/>, section 5.4. If the neighboring
 	AS is a Customer, the egress speaker runs the Downstream Verification Procedure.</t>
