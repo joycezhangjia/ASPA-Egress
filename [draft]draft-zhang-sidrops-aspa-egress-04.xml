@@ -361,10 +361,13 @@
 	The verifying node (which may be a different node) SHOULD notify both the affected
 	  node and the human operators of the network.</t>
 
-	<t>If the network does some complex AS_PATH modification, they should do
-	a proper assessment of possible partial verification approaches, which may include
-	the aforementioned pair verifications, and maybe other verifications as well.
-	  The full extent of possible verifications is out of scope of this document.</t>
+	<t>If the network does some complex AS_PATH modification (e.g., during AS merges, 
+  splits, or renumbering transitions), the operator should do a proper assessment of 
+  possible partial verification approaches, which may include the aforementioned pair 
+  verifications, and maybe other verifications as well. In such cases, it is recommended to verify 
+  the full AS_PATH, since registration errors or omissions frequently occur during 
+  these transitions.
+  The full extent of possible verifications is out of scope of this document.</t>
 
       </section>
     </section>
