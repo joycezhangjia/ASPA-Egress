@@ -1,19 +1,39 @@
 # ASPA-Egress
-ASPA-based AS_PATH Verification for BGP Export
 
-**draft-zhang-sidrops-aspa-egress-04**: the latest version proposed to IETF sidrops WG
+ASPA-based AS_PATH Verification for BGP Export.
 
-1. Key Updates in Version 04
-- Authorship Update: K. Sriram and Nan Geng have been officially added as co-authors.
-- Procedure Refinement (Section 3):
-    - Add Section 3.1 (Utility of OTC Attribute): Clarifies why egress verification alone may yield incorrect results in complex peering scenarios and how OTC complements it.
-    - Add Section 3.2 (Consideration of Complex BGP Sessions): Provides guidance on handling complex relationships.
-- New Optimization Section (Section 4): Introduced strategies to minimize processing overhead, such as centralized processing for full tables and operational switches to disable egress verification when ingress ASPA + OTC is fully deployed.
-- Editorial Cleanup: Extensive improvements to the Abstract, Introduction, and overall readability.
+## Draft Files
 
-2. Plan for Version 05 (Target: Before IETF 125, March 2)
-- Out-of-Band Verification (Maria):
-- "Prepend Neighbor AS" Option (Yangyang & Maria):
-Add an "Implementation Note" or similar subsection describing an optional/command-line feature for prepending the neighbor AS. This will be presented as a strict mode for diagnostics/debugging.
-- BGP Roles for Self-Check (Nan):
-Refine the "Operational Considerations" to explicitly mention using negotiated BGP Roles to detect local ASPA registration errors (early detection).
+- `draft-zhang-sidrops-aspa-egress-04.xml`: preserved copy of the public IETF v04 XML from the IETF archive.
+- `draft-zhang-sidrops-aspa-egress-04.pdf`: existing v04 PDF artifact.
+- `draft-zhang-sidrops-aspa-egress-05.xml`: current local working text for the next revision.
+- `draft-zhang-sidrops-aspa-egress-05.pdf`: rendered PDF for the current v05 working text.
+
+The previous GitHub working file named `[draft]draft-zhang-sidrops-aspa-egress-04.xml` had already moved beyond the public v04 text. It has therefore been renamed to `draft-zhang-sidrops-aspa-egress-05.xml`, and the public v04 XML has been restored separately.
+
+## v05 Working Notes
+
+The current v05 working text starts from Maria's post-v04 restructuring and incorporates Sriram's March 2026 review concerns where they did not conflict with the intended egress-verification scope.
+
+Changes made in this working update:
+
+- Reframed the Introduction to say that this draft does not question the adequacy of ingress ASPA verification and does not change the ASPA verification procedures.
+- Kept both partial deployment and operational assurance as motivations, without ranking one as the only or primary motivation.
+- Expanded the partial-deployment scenario and moved it before the missing-provider scenario in Section 3.
+- Preserved Maria's operational assurance cases, including missing provider ASPA records, AS migration/renumbering, and AS_PATH manipulation/export-policy mistakes.
+- Restored the v04-style egress/ingress figure context and added explicit OTC precedence: OTC or an equivalent intra-AS leak-prevention signal must not be overridden by egress ASPA verification.
+- Moved neighbor-AS prepending out of the main inline procedure and into a `Neighbor-AS-Augmented Verification` subsection. The text now treats this as a verification mode that should be supported for detached/offline/monitoring use, while inline enforcement is left to local policy.
+- Added metadata requirements for centralized or Route Reflector based verification: the verifier needs per-egress ASBR, local AS, neighbor AS, BGP Role/local relationship, and export-policy context.
+- Recast "turning off" egress checks as `Deployment Controls` rather than an optimization. The text says controls may be appropriate in narrow cases, but not when the operator still wants egress checks for AS migration, AS_PATH manipulation, ASPA registration omissions, or other export-side operational errors.
+
+## Open Points for Coauthor Review
+
+- Whether `Neighbor-AS-Augmented Verification` should be stronger than the current detached/offline/monitoring-oriented wording.
+- Whether inline enforcement should remain `SHOULD NOT propagate` for Invalid results, or whether the text should more explicitly describe alert-only and policy-driven deployment modes.
+- Whether the restored OTC precedence text is strong enough for complex peering and partial-transit cases.
+- Whether the centralized/Route Reflector verification section is acceptable with the added metadata requirements, or should be further narrowed.
+- Whether `Deployment Controls` adequately preserves the useful v04 optimization ideas without implying that egress verification is generally unnecessary.
+
+## Notes on ASPA Monitoring
+
+The latest ASPA verification draft includes monitoring-related recommendations, such as providers monitoring whether their AS number is included in customer ASPA SPAS and logging Invalid causes for diagnostics. It does not appear to define a detailed standalone ASPA monitoring procedure. For this reason, the current v05 working text does not rely on ASPA monitoring as a core premise for the egress draft's positioning.
