@@ -314,12 +314,13 @@
       <section anchor="neighbor-as-augmented-verification">
 	<name>Neighbor-AS-Augmented Verification</name>
 	<t>For operational assurance, especially to detect missing Provider ASes
-	in ASPA records, an implementation or detached verification system SHOULD
-	support a verification mode that, for the process of verification only,
-	also prepends the neighboring AS number when the neighboring AS is a
-	Provider or a Customer. Otherwise, if the provider-customer relationship
-	is not properly reflected in the published ASPA, the route may fail
-	AS_PATH Verification later, as described in <xref target="missing-provider"/>.</t>
+	in ASPA records, an implementation or detached verification system
+	(see <xref target="centralized-verification"/>) SHOULD support a
+	verification mode that, for the process of verification only, also prepends
+	the neighboring AS number when the neighboring AS is a Provider or a
+	Customer. Otherwise, if the provider-customer relationship is not properly
+	reflected in the published ASPA, the route may fail AS_PATH Verification
+	later, as described in <xref target="missing-provider"/>.</t>
 
 	<t>This neighbor-AS-augmented verification is most naturally used in
 	detached, offline, or monitoring configurations. Use of this mode for
@@ -369,11 +370,13 @@
 	verification and OTC or equivalent intra-AS leak-prevention marking are
 	deployed and the remaining motivation is already covered by local policy.</t>
 
-	<t>Such controls should not be interpreted as a general recommendation to
-	disable ASPA or OTC. They are not appropriate for scenarios where the
-	operator still wants egress verification to detect AS migration mistakes,
-	AS_PATH manipulation mistakes, ASPA registration omissions, or other
-	export-side operational errors.</t>
+	<t>Such controls only affect how this document's egress verification is
+	enforced for selected routes or sessions. They do not disable ASPA, OTC, or
+	ingress ASPA verification, and they do not imply that ASPA-based
+	verification is unnecessary. They are not appropriate for scenarios where
+	the operator still wants egress verification to detect AS migration
+	mistakes, AS_PATH manipulation mistakes, ASPA registration omissions, or
+	other export-side operational errors.</t>
       </section>
 
       <section anchor="partial-verification">
@@ -486,6 +489,10 @@
       It is generally not recommended to switch ASPA and OTC off for these links
 	without having a proper alternative.</t>
 
+      <t>Notably, route server BGP sessions may easily become a Complex
+      relationship if any of the peers there becomes a provider, while others
+	stay as peers <xref target="RIPE92-ASPA-LAST-RESORT"/>.</t>
+
     </section>
 
 
@@ -518,15 +525,15 @@
         
         
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.2119.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6480.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4271.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8893.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8481.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9234.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.4456.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6480.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7854.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8092.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8481.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8893.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9234.xml"/>
 
         &I-D.ietf-sidrops-aspa-profile;
         &I-D.ietf-sidrops-aspa-verification;
@@ -568,6 +575,14 @@
 	  </front>
 	  <seriesInfo name="DOI" value="arXiv:2311.00335v1"/>
 	</reference>
+
+	<reference anchor="RIPE92-ASPA-LAST-RESORT" target="https://ripe92.ripe.net/programme/meeting-plan/sessions/109/ZT9NYU/">
+	  <front>
+	    <title>Do not drop ASPA invalids of the last resort</title>
+	    <author fullname="Ondrej Caletka"/>
+	    <date day="22" month="May" year="2026"/>
+	  </front>
+	</reference>
       </references>
 
  
@@ -584,7 +599,7 @@
     <section anchor="Acknowledgements" numbered="false"> 
       <!-- [REPLACE/DELETE] an Acknowledgements section is optional -->
       <name>Acknowledgements</name>
-      <t>The authors thank Nan Geng, Sriram Kotikalapudi and Randy Bush for their valuable suggestions and comments.</t>
+      <t>The authors thank Randy Bush for his valuable suggestions and comments.</t>
     </section>
 
  <!--     <section anchor="Contributors" numbered="false">-->
