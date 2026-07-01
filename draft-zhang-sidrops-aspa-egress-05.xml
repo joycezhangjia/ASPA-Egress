@@ -278,6 +278,9 @@
     <section anchor="method">
       <name>Procedure of ASPA-based AS_PATH Verification at eBGP Egress</name>
 
+      <section anchor="basic-egress-verification">
+	<name>Basic Egress Verification</name>
+
       <t>Any BGP speaker advertising routes to other autonomous systems via eBGP (egress)
       SHOULD run ASPA-based AS_PATH Verification to avoid sending routes with invalid AS_PATHs.
       The procedure is modified so that it simulates what may be the outcome of
@@ -298,6 +301,13 @@
       <xref target="I-D.ietf-sidrops-aspa-verification"/>, section 5.4. If the neighboring
 	AS is a Customer, the egress speaker runs the Downstream Verification Procedure.</t>
 
+      <t>To select the appropriate verification procedure, the egress speaker needs
+      reliable information about the relationship between the local AS and the
+      egress neighbor AS. This information may be obtained from BGP Role
+      capabilities exchanged in the BGP OPEN message, ASPA objects registered by
+      the local AS and the external neighbor AS, or local BGP peering and
+      export-policy configuration.</t>
+
       <t>If the relationship is Complex, the egress speaker SHOULD logically segregate
       the single eBGP session into regular BGP Roles, and then apply the verification
       procedures accordingly. If such a segregation is not feasible, the egress
@@ -310,6 +320,7 @@
       the egress speaker SHOULD NOT propagate the affected route to that
       specific neighbor, and a notification SHOULD be sent to the human operators
 	of the network.</t>
+      </section>
 
       <section anchor="neighbor-as-augmented-verification">
 	<name>Neighbor-AS-Augmented Verification</name>
@@ -488,12 +499,15 @@
 	network in a timely manner.</t>
 
       <t>If it is necessary to have an eBGP session with Complex relationship,
-      the operators should take extra care properly documenting and designing the
-      appropriate local modifications of the ASPA and OTC procedures, following
-      the guidance in <xref target="RFC9234"/> where applicable. This document
-      does not define additional BGP Roles or OTC behavior for these cases. It
-      is generally not recommended to switch ASPA and OTC off for these links
-      without having a proper alternative.</t>
+      including mutual-transit arrangements, the operators should take extra care
+      properly documenting and designing the appropriate local modifications of
+      the ASPA and OTC procedures. ASPA objects can represent mutual provider
+      authorization at the AS level, while OTC and BGP Roles are session
+      oriented and may require segregating the relationship into non-Complex
+      sessions where feasible. This document does not define additional BGP
+      Roles or OTC behavior for these cases. It is generally not recommended to
+      switch ASPA and OTC off for these links without having a proper
+      alternative.</t>
 
       <t>Notably, route server BGP sessions may easily become a Complex
       relationship if any of the peers there becomes a provider, while others
