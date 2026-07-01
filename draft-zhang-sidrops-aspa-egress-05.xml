@@ -351,6 +351,13 @@
 	needed to simulate the egress AS_PATH. Without this metadata, centralized
 	verification may be incomplete or inefficient.</t>
 
+	<t>Centralized or Route Reflector based verification is primarily useful
+	for monitoring and operational assurance unless it is coupled with accurate
+	per-egress metadata and an enforcement mechanism at the actual egress
+	ASBR. A centralized verifier that cannot affect the egress ASBR's export
+	decision may still detect and report errors, but it cannot by itself
+	prevent propagation of an Invalid route.</t>
+
 	<t>It is also possible to collect routes by other means, e.g. by the
 	BGP Monitoring Protocol<xref target="RFC7854"/>, and run the verification
 	in a completely detached configuration. While this configuration doesn't
@@ -386,6 +393,12 @@
 	If the verifying node can determine which prefix of the AS PATH
 	is not yet verified, it MAY skip re-verifying the received part of the path,
 	  and compose the ingress result with the local part.</t>
+
+	<t>Partial verification is a scoped optimization, not a relaxation of
+	ASPA-based AS_PATH verification. It is applicable only when the verifying
+	node has reliable local state that identifies the already verified part of
+	the AS_PATH and the egress-specific part that still needs to be checked.
+	Otherwise, the verifier should perform full AS_PATH verification.</t>
 
 	<t>For the simple case as described in <xref target="method"/>,
 	the egress verification procedure would check the local AS number and,
@@ -488,6 +501,13 @@
       appropriate local modifications of the ASPA and OTC procedures.
       It is generally not recommended to switch ASPA and OTC off for these links
 	without having a proper alternative.</t>
+
+      <t>This document does not define additional BGP Roles or OTC behavior for
+      Complex peering relationships. Operators are expected to follow the
+      guidance in <xref target="RFC9234"/>, including segregating the
+      relationship into non-Complex sessions where feasible, and using local
+      policy context when a single session cannot fully express the
+      route-specific relationship.</t>
 
       <t>Notably, route server BGP sessions may easily become a Complex
       relationship if any of the peers there becomes a provider, while others

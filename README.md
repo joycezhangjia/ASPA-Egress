@@ -25,6 +25,9 @@ Changes made in this working update:
 - Moved neighbor-AS prepending out of the main inline procedure and into a `Neighbor-AS-Augmented Verification` subsection. The text now treats this as a verification mode that should be supported for detached/offline/monitoring use, while inline enforcement is left to local policy.
 - Added metadata requirements for centralized or Route Reflector based verification: the verifier needs per-egress ASBR, local AS, neighbor AS, BGP Role/local relationship, and export-policy context.
 - Recast "turning off" egress checks as `Deployment Controls` rather than an optimization. The text says controls may be appropriate in narrow cases, but not when the operator still wants egress checks for AS migration, AS_PATH manipulation, ASPA registration omissions, or other export-side operational errors.
+- Clarified, after coauthor review, that centralized or Route Reflector based verification is primarily useful for monitoring and operational assurance unless it has accurate per-egress metadata and an enforcement mechanism at the actual egress ASBR.
+- Clarified that partial verification is a scoped optimization and not a relaxation of ASPA-based AS_PATH verification.
+- Clarified that this draft does not define new BGP Roles or OTC behavior for Complex peering relationships, and instead follows the guidance in RFC 9234.
 
 ## Open Points for Coauthor Review
 
@@ -33,6 +36,14 @@ Changes made in this working update:
 - Whether the restored OTC precedence text is strong enough for complex peering and partial-transit cases.
 - Whether the centralized/Route Reflector verification section is acceptable with the added metadata requirements, or should be further narrowed.
 - Whether `Deployment Controls` adequately preserves the useful v04 optimization ideas without implying that egress verification is generally unnecessary.
+
+## Handling of Recent Coauthor Comments
+
+- `Neighbor-AS-Augmented Verification`: current text is kept for this revision as a compromise. It supports this verification mode and allows inline enforcement as a matter of local policy, but does not make NAAV part of the mandatory/base egress procedure.
+- Invalid handling: current `SHOULD NOT propagate` wording is retained.
+- OTC and Complex relationships: no new mutual-transit or Complex-role mechanism is added. The text now makes clear that the draft follows RFC 9234 and does not redefine BGP Roles or OTC behavior.
+- Centralized/Route Reflector verification: text is narrowed to emphasize monitoring and operational assurance unless accurate per-egress metadata and an actual enforcement path are available.
+- Partial verification: text is clarified so that partial verification cannot be read as skipping necessary ASPA checks without reliable local knowledge.
 
 ## Notes on ASPA Monitoring
 
